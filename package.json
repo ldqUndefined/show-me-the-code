@@ -1,0 +1,11 @@
+{
+  "name": "show-me-the-code",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ldqUndefined/show-me-the-code.git",
+  "author": "ldqUndefined <435499825@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}
