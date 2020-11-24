@@ -234,6 +234,10 @@ Location指定的是一个重定向的请求目标，Content-Location可以理�
 Content-Range: bytes 200-1000/67589 
 ```
 
+## Content-Security-Policy
+
+响应头部，允许站点管理者控制用户代理能够为指定的页面加载哪些资源。除了少数例外情况，设置的政策主要涉及指定服务器的源和脚本结束点。这将帮助防止跨站脚本攻击（Cross-Site Script）（XSS）
+
 ## Content-Type
 
 实体头部用于指示资源的MIME类型
@@ -369,7 +373,7 @@ Proxy-Authenticate首部需要与 407 Proxy Authentication Required 响应一起
 Range: bytes=200-1000, 2000-6576, 19000- 
 ```
 
-## Refer
+## Referer
 
 包含了当前请求页面的来源页面的地址，即表示当前页面是通过此来源页面里的链接进入的。服务端一般使用 `Referer` 请求头识别访问来源，可能会以此进行统计分析、日志记录以及缓存优化等。
 
@@ -378,11 +382,157 @@ Range: bytes=200-1000, 2000-6576, 19000-
 - 来源页面采用的协议为表示本地文件的 "file" 或者 "data" URI；
 - 当前请求页面采用的是非安全协议，而来源页面采用的是安全协议（HTTPS）。(https跳http)
 
+## Referrer-Policy
+
+响应首部，用来监管哪些访问来源信息：会在Referer中发送，也就是应该被包含在生成的请求中。
+
+```
+//不会发送Referer
+Referrer-Policy: no-referrer   
+//默认值，在相等安全级别下发送(https->https)，降级不会发送(https->http)
+Referrer-Policy: no-referrer-when-downgrade	
+//仅发送文件的源作为引用地址
+Referrer-Policy: origin			
+//对于同源的请求，会发送完整的URL作为引用地址，但是对于非同源请求仅发送文件的源。
+Referrer-Policy: origin-when-cross-origin		
+//对于同源的请求会发送引用地址，但是对于非同源请求则不发送引用地址信息。
+Referrer-Policy: same-origin		
+//在同等安全级别的情况下，发送文件的源作为引用地址(HTTPS->HTTPS)，但是在降级的情况下不会发送 (HTTPS->HTTP)。
+Referrer-Policy: strict-origin	
+//对于同源的请求，会发送完整的URL作为引用地址；在同等安全级别的情况下，发送文件的源作为引用地址(HTTPS->HTTPS)；在降级的情况下不发送此首部 (HTTPS->HTTP)。
+Referrer-Policy: strict-origin-when-cross-origin	
+//无论是同源请求还是非同源请求，都发送完整的 URL（移除参数信息之后）作为引用地址。
+Referrer-Policy: unsafe-url
+```
+
+## Retry-After
+
+表示用户代理需要等待多长时间之后才能继续发送请求。这个首部主要应用于以下两种场景：
+
+- 当与 503 (Service Unavailable，当前服务不存在) 响应一起发送的时候，表示服务下线的预期时长。
+- 当与重定向响应一起发送的时候，比如 301 (Moved Permanently，永久迁移)，表示用户代理在发送重定向请求之前需要等待的最短时间。
 
 
 
+## Server
+
+包含了处理请求的源头服务器所用到的软件相关信息
+
+## Set-Cookie
+
+用来设置客户端需要缓存的cookie
+
+## TE
+
+用来指定用户代理希望使用的传输编码类型。(可以将其非正式称为 *Accept-Transfer-Encoding*， 这个名称显得更直观一些)。
+
+支持 HTTP/1.1 协议的接收方一定可以处理 `chunked` 传输编码请求，所以没有必要一定在  `TE` 首部指定“chunked”关键字。然而，如果客户端将要接收编码在chunked包体里面的"trailer"信息的时候，主动指定该头部将会非常有用。
+
+```
+TE: compress
+TE: deflate
+TE: gzip
+TE: trailers
+```
+
+## Trailer
+
+<u>响应首部</u>，允许发送方在分块发送的消息后面添加额外的元信息，这些元信息可能是随着消息主体的发送动态生成的，比如消息的完整性校验，消息的数字签名，或者消息经过处理之后的最终状态等。
+
+## Transfer-Encoding
+
+指明了将 entity 安全传递给用户所采用的编码形式。是一个逐跳传输消息首部，即仅应用于两个节点之间的消息传递，而不是所请求的资源本身。一个多节点连接中的每一段都可以应用不同的Transfer-Encoding 值。如果你想要将压缩后的数据应用于整个连接，那么请使用端到端传输消息首部  Content-Encoding 。
+
+**当这个消息首部出现在 HEAD 请求的响应中，而这样的响应没有消息体，那么它其实指的是应用在相应的  GET 请求的应答的值。**
+
+transfer-encoding:chunked的时候，不发送content-length，在每一个分块的开头需要添加当前分块的长度，以十六进制的形式表示，后面紧跟这'\r\n'，之后是分块本身，后面也是'\r\n'，终止块是一个常规的分块，不同之处在于其长度为0，终止块后面是一个trailer，由一系列的实体消息首部构成。
+
+分块编码的应用场景：要传输大量的数据，但是在请求在没有被处理完之前响应的长度是无法获得的。
+
+```html
+HTTP/1.1 200 OK 
+Content-Type: text/plain 
+Transfer-Encoding: chunked
+
+7\r\n
+Mozilla\r\n 
+9\r\n
+Developer\r\n
+7\r\n
+Network\r\n
+0\r\n 
+\r\n
+```
+
+## User-Agent
+
+User-Agent 首部包含了一个特征字符串，用来让网络协议的对端来识别发起请求的用户代理软件的应用类型、操作系统、软件开发商以及版本号。
+
+```
+User-Agent: <product> / <product-version> <comment>
+```
 
 
 
+## Vary
 
+响应首部，它决定了对于未来的一个请求头，应该用一个缓存的回复(response)还是向源服务器请求一个新的回复。它被服务器用来表明在 content negotiation algorithm（内容协商算法）中选择一个资源代表的时候应该使用哪些头部信息（headers）
+
+在响应状态码为 304 Not Modified  的响应中，也要设置 Vary 首部，而且要与相应的 200 OK 响应设置得一模一样。
+
+```
+Vary: *  
+//所有的请求都被视为唯一并且非缓存的，使用Cache-Control: no-store,来实现则更适用，这样用于说明不存储该对象更加清晰。
+Vary: <header-name>, <header-name>, ... 
+// 逗号分隔的一系列http头部名称，用于确定缓存是否可用
+```
+
+## Via
+
+通用首部，是由代理服务器添加的，适用于正向和反向代理，在请求和响应首部中均可出现。这个消息首部可以用来追踪消息转发情况，防止循环请求，以及识别在请求或响应传递链中消息发送者对于协议的支持能力。
+
+## X-Forwarded-For
+
+在客户端访问服务器的过程中如果需要经过HTTP代理或者负载均衡服务器，可以被用来获取最初发起请求的客户端的IP地址，这个消息首部成为事实上的标准。在消息流从客户端流向服务器的过程中被拦截的情况下，服务器端的访问日志只能记录代理服务器或者负载均衡服务器的IP地址。如果想要获得最初发起请求的客户端的IP地址的话，那么 X-Forwarded-For 就派上了用场。
+
+```
+X-Forwarded-For: <client>, <proxy1>, <proxy2>
+```
+
+第一个就是客户端的IP
+
+## X-Forwarded-Host
+
+是一个事实上的标准首部，用来确定客户端发起的请求中使用  Host  指定的初始域名。
+
+反向代理（如负载均衡服务器、CDN等）的域名或端口号可能会与处理请求的源头服务器有所不同，在这种情况下，X-Forwarded-Host 可以用来确定哪一个域名是最初被用来访问的。
+
+## X-Real-IP
+
+只记录客户端IP地址，没有中间的代理信息，相当于X-Forwarded-For的简化版。
+
+## X-Frame-Options
+
+响应首部，用来给浏览器指示允许一个页面可否在`<frame>/<iframe>/<embed>/<object>`中展现的标记。站定可以通过确保网站没有被嵌入到别人的站点里面，从而避免 **点击劫持** 攻击。
+
+```
+X-Frame-Options: deny                    //不允许在frame中展示，同源也不行
+X-Frame-Options: sameorigin				 //可以在同源的frame中展示
+X-Frame-Options: allow-from https://example.com/     //可以在给定的源中展示
+```
+
+## X-XSS-Protection
+
+<u>响应首部</u>，是 Internet Explorer，Chrome 和 Safari 的一个特性，当检测到跨站脚本攻击 (XSS)时，浏览器将停止加载页面。若网站设置了良好的 Content-Security-Policy 来禁用内联 JavaScript ('unsafe-inline')，现代浏览器不太需要这些保护， 但其仍然可以为尚不支持 CSP 的旧版浏览器的用户提供保护。
+
+```
+//禁止xss过滤
+X-XSS-Protection: 0 
+//启用XSS过滤（通常浏览器是默认的）。 如果检测到跨站脚本攻击，浏览器将清除页面（删除不安全的部分）。
+X-XSS-Protection: 1
+//启用XSS过滤。 如果检测到攻击，浏览器将不会清除页面，而是阻止页面加载
+X-XSS-Protection: 1; mode=block
+//启用XSS过滤。 如果检测到跨站脚本攻击，浏览器将清除页面并使用CSP report-uri指令的功能发送违规报告。
+X-XSS-Protection: 1; report=<reporting-uri>
+```
 
