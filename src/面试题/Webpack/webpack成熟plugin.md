@@ -30,3 +30,41 @@ html-webpack-plugin帮助我们生成一个html文件到指定位置，并且通
 
 这里里面有各种react开发中会用到的插件
 
+## fork-ts-checker-webpack-plugin
+
+加快ts检测速度的插件，使用另外的线程帮我们进行ts的类型检测，配合babel-loader进行ts的编译，加快每次修改代码时的构建速度。
+
+这个插件使用的是typescript的模块解析，所以tsconfig.json要配置正确。使用typescript的模块解析是处于性能考虑，这样就无需等待webpack去编译文件了。
+
+| 键名  | 作用                                                         |
+| ----- | ------------------------------------------------------------ |
+| async | 如果设为true，则在webpack编译完之后进行报错，所以不会阻塞编译，开发模式设为true，生产环境设为false，一有类型报错就停止编译。 |
+
+## clean-webpack-plugin
+
+用来在每次构建新的输出之前把上次打包的输出清理掉。
+
+## webpack.DefinePlugin
+
+允许在编译时创建配置的全局常量，帮助我们区分开发模式和生产模式，以及在webpack打包时会用到的全局环境变量。
+
+## webpack-manifest-plugin
+
+使用这个插件来帮助我们生成对应的资源清单(assets manifest)json文件，帮助我们从文件的名称映射到文件的地址。前后端分离貌似用不到这个json文件，服务端渲染貌似用的上(用于查找文件对应的路径)。
+
+## webpack-bundle-analyzer
+
+生成可以缩放的树图帮我们分析打包的构成。
+
+## speed-measure-webpack-plugin
+
+可以帮助我们分析构建过程中各个loader和plugin所花费的时间，不可以和**hard-source-webpack-plugin**插件同时使用。
+
+## webpack.optimize.ModuleConcatenationPlugin
+
+由于webpack运行时的requrire方法会导致闭包问题，所以可以通过把闭包的内容都提升到最上层的模块中，以减少闭包的变量查找过程中的性能损耗，这就是**scope hoisting**。在生产环境默认开启。
+
+
+
+
+
