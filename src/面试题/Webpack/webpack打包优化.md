@@ -28,7 +28,7 @@
 
 当在高版本的浏览器中进行开发时，可以跳过babel-loaer的编译，因为高版本的浏览器可以运行高版本的js代码。
 
-### 优化loader配置
+### 缩小解析范围
 
 让尽可能少的文件被loader处理。在特定的loader中控制test、include和exclude的范围，webpack默认会遍历node_modules，造成不必要的开销。
 
