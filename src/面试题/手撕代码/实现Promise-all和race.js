@@ -3,19 +3,23 @@ function PromiseAll(promiseArr) {
   let result = [];
   let finishCount = 0;
   return new Promise((resolve, reject) => {
-    promiseArr.forEach((item, index) => {
-      Promise.resolve(item)
-        .then(value => {
-          result[index] = value;
-          finishCount++;
-          if (finishCount === promiseArr.length) {
-            resolve(result);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
+    if (promiseArr.length === 0) {
+      resolve([]);
+    } else {
+      promiseArr.forEach((item, index) => {
+        Promise.resolve(item)
+          .then(value => {
+            result[index] = value;
+            finishCount++;
+            if (finishCount === promiseArr.length) {
+              resolve(result);
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    }
   });
 }
 let a = Promise.resolve(1);
