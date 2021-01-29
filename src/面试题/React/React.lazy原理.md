@@ -1,0 +1,3 @@
+# React.lazy原理
+
+React.lazy参数是一个返回Promise的函数，在React.lazy中执行这个函数，并将组件的status的值设为pending，并且将返回的promise给throw出去，在promise的then方法里，把status值设为resolve，并将组件的_result设为返回的组件。React.Suspense中会判断children的值，并且类似componentDidCatch捕获子组件抛出的错误，如果抛出的为promise，则显示fallback的值，否则展示children，从而实现了组件的懒加载。
