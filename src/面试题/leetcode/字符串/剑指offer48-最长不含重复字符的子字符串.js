@@ -34,3 +34,28 @@ var lengthOfLongestSubstring = function(s) {
   }
   return max;
 };
+//用set，好理解
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function(s) {
+  if (s.length <= 1) {
+    return s.length;
+  }
+  let visit = new Set(),
+    lo = 0,
+    hi = 1,
+    max = 1;
+  visit.add(s.charAt(lo));
+  while (lo < s.length) {
+    while (hi < s.length && !visit.has(s.charAt(hi))) {
+      visit.add(s.charAt(hi));
+      hi++;
+    }
+    max = Math.max(max, visit.size);
+    visit.delete(s.charAt(lo));
+    lo++;
+  }
+  return max;
+};
