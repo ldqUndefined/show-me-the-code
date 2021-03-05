@@ -1,5 +1,5 @@
-//leetcode-cn.com/problems/multiply-strings/submissions/
-https: /**
+//https:leetcode-cn.com/problems/multiply-strings/submissions/
+/**
  * @param {string} num1
  * @param {string} num2
  * @return {string}
