@@ -44,7 +44,7 @@ variables下记得配置CI:'false'，否则默认只要项目中出现warning流
   GIT_CLEAN_FLAGS: -ffdx -e node_modules
   ```
 
-  同个目录不同job切换时保留node_modules。(项目配置了并行流水线，所以这个可能就没啥作用了)
+  同个目录不同job切换时保留node_modules。(项目配置了并行流水线，所以这个可能就没啥作用了。但是加了hard-source-webpack-plugin之后又有用了)
 
 - gitlab-runner开启并发(parallel)模式，并且配置流水线目录，可以并发执行流水线任务，不会因为连续多个commit而阻塞到后面的commit：
 
@@ -57,6 +57,8 @@ variables下记得配置CI:'false'，否则默认只要项目中出现warning流
   # 前面有在执行的流水线的话则依次递增
   # ${CI_PROJECT_PATH} 项目的git仓库地址，在这里为platform/aios-platform-web/.git/
   ```
+
+- 当使用hard-source-webpack-plugin时，不同分支之间由于交替使用gitlab-runner的原因，会导致无法命中缓存，所以通过固定分支使用特定的单一runner来达到使用相同的构建目录以达到复用缓存的目的。
 
 ## 宿主机地址挂载
 
@@ -80,6 +82,4 @@ build_ci/config.yml中配置了`mount: /opt/aios-web/upload:/usr/share/nginx/aio
 ## 云平台离线部署流程
 
 在TPP测试发布平台上进入算法仓前端项目进行离线打包，将打包的文件下载后到CMP上新增应用即可。
-
-
 
