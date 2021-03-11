@@ -44,7 +44,7 @@ variables下记得配置CI:'false'，否则默认只要项目中出现warning流
   GIT_CLEAN_FLAGS: -ffdx -e node_modules
   ```
 
-  同个目录不同job切换时保留node_modules。(项目配置了并行流水线，所以这个可能就没啥作用了。但是加了hard-source-webpack-plugin之后又有用了)
+  同个目录不同job切换时保留node_modules。(项目配置了并行流水线，所以这个可能就没啥作用了)
 
 - gitlab-runner开启并发(parallel)模式，并且配置流水线目录，可以并发执行流水线任务，不会因为连续多个commit而阻塞到后面的commit：
 
