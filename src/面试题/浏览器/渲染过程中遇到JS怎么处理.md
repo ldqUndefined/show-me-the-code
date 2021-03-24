@@ -2,7 +2,7 @@
 
 js的加载、解析与执行会阻塞DOM的构建，因为javascript和渲染线程共用一个线程，所以当遇到js，会暂停构建DOM，将控制权移交给JS引擎，等JS执行完毕，浏览器再从终端的地方恢复DOM构建。所以想要页面渲染越快，就不应该让JS阻塞DOM的渲染，所以建议把script标签放在body标签的底部，或者给script加上defer或者async属性。
 
-JS不止会阻塞DOM的构建，也会阻塞DOM的构建。
+JS不止会阻塞DOM的构建，也会阻塞CSSOM的构建。
 
 原本DOM和CSSOM的构建是互不影响的，但是执行JS时，CSSOM也会阻塞DOM的构建，只有等CSSOM构建完之后，再执行完JS后，才能继续进行DOM的构建。
 

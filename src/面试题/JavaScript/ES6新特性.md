@@ -12,4 +12,4 @@
 - Set、Map
 - Promise
 - Generator
-- import
+- es6模块

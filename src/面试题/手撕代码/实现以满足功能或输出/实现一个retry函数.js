@@ -36,21 +36,3 @@ retry(() => {
   console.log('doing');
   return Promise.resolve('done');
 }, 3);
-let frameTime = 0;
-const channel = new MessageChannel();
-const port1 = channel.port1;
-const port2 = channel.port2;
-const test = () => {
-  console.log('test');
-  frameTime = performance.now();
-  port1.postMessage('port1 postmessage');
-};
-port2.onmessage = () => {
-  console.log('port2 onmessage');
-  if (performance.now() - frameTime < 5) {
-    port1.postMessage('port1 postmessage');
-  } else {
-    requestAnimationFrame(test);
-  }
-};
-test();

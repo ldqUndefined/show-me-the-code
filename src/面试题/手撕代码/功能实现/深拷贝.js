@@ -5,7 +5,7 @@ const deepCloneEasy = obj => JSON.parse(JSON.stringify(obj));
 //递归版
 
 const deepClone = (target, map = new Map()) => {
-  if (typeof target !== '' || target === null) {
+  if (typeof target !== 'object' || target === null) {
     return target;
   }
   if (map.has(target)) {
