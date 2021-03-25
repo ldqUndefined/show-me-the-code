@@ -24,4 +24,5 @@
 - sameSite cookie。通过cookie中的sameSite属性设置严格与否。
 - CSRF Token。输出页面时带上csrf token，发请求时带上，后端校验是否合法。
 - 双重cookie
+- 验证码
 
