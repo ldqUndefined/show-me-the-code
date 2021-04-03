@@ -28,6 +28,8 @@ new一个对象过程会发生什么
 
 讲一讲immer，讲一下immutable对象的好处？结构化对象保持没有修改的对象引用不变而减少React组件的渲染。为什么不同immutable.js？immutable.js操作复杂，需要调用函数进行js原生对象和immutable类型的转换，使用immer可以像写原生js对象一样，且immutable.js的类型难写，和ts共存困难。 immer原理？Proxy代理。immer是否对每一层对象都用Proxy代理？最后这个问题我坦白不会，我确实只知道用Proxy代理而已哈哈。
 
+setState是同步还是异步？什么情况下是同步的？
+
 讲一下React的虚拟dom及它的好处
 
 讲一下React的diff的策略及diff的细节
