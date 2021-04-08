@@ -1,41 +1,48 @@
-function tryPromise(fn, interval, times) {
-  let timeOut = ms => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject('timeout');
-      }, ms);
-    });
-  };
-  let p = fn();
-  const tryP = () => {
-    return Promise.race([p, timeOut(interval)])
-      .then(v => v)
-      .catch(reason => {
-        if (times === 0) {
-          throw new Error(reason);
+Promise.retry = (promiseFn, time = 3) => {
+  const tryFunc = () => {
+    return promiseFn()
+      .then(v => Promise.resolve(v))
+      .catch(e => {
+        if (--time === 0) {
+          return Promise.reject(e);
         } else {
-          console.log('重试一次');
-          times--;
-          return tryP();
+          return tryFunc();
         }
       });
   };
-  return tryP();
-}
+  return tryFunc();
+};
 
-let timeOutSuccess = ms => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('success');
-      resolve('666');
-    }, ms);
+Promise.retry = (promiseFn, time = 3) => {
+  return new Promise(async (resolve, reject) => {
+    while (time-- > 0) {
+      try {
+        let result = await promiseFn();
+        resolve(result);
+        break;
+      } catch (e) {
+        if (time === 0) {
+          reject(e);
+        }
+      }
+    }
   });
 };
 
-tryPromise(() => timeOutSuccess(6000), 999, 5)
-  .then(v => {
-    console.log('成功啦', v);
-  })
-  .catch(v => {
-    console.log('失败咯');
+const test = () =>
+  new Promise((resolve, reject) => {
+    let temp = Math.random();
+    setTimeout(() => {
+      if (temp < 0.1) {
+        console.log('成功');
+        resolve(temp);
+      } else {
+        console.log('失败');
+        reject('可怜哦');
+      }
+    }, 100);
   });
+
+Promise.retry(test, 5)
+  .then(v => console.log('成功咯', v))
+  .catch(e => console.log('失败咯', e));

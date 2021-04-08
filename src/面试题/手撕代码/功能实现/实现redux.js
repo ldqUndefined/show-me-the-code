@@ -28,7 +28,7 @@ function createStore(reducer) {
 }
 
 function combineReducers(reducers) {
-  return function(state = {}, action) {
+  return function(state, action) {
     const nextState = {};
     const reducersKey = Object.keys(reducers);
     let hasChange = false;
