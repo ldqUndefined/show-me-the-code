@@ -10,7 +10,7 @@ context提供了一种无需为每层组件手动添加props，就能在组件�
 
 只有当组件所处的树中没有匹配到provider时，其defaultValue参数才会生效。将undefiend传递给provider的value时，消费组件的defaultValue不会生效。
 
-## context.Provicer
+## context.Provider
 
 接收一个value值，传递给消费组件，一个 Provider 可以和多个消费组件有对应关系。多个 Provider 也可以嵌套使用，里层的会覆盖外层的数据。
 
