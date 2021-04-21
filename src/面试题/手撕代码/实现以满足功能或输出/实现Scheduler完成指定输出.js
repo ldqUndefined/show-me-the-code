@@ -118,3 +118,27 @@ addTask(500, '2');
 addTask(300, '3');
 addTask(400, '4');
 // output: 2 3 1 4
+//更优化版本
+class Scheduler {
+  constructor() {
+    this.toRun = [];
+    this.running = [];
+  }
+  add(promiseCreator) {
+    return new Promise((resolve, reject) => {
+      this.toRun.push(() => promiseCreator().then(resolve));
+      this.schedule();
+    });
+  }
+  schedule() {
+    while (this.running.length < 2 && this.toRun.length > 0) {
+      let item = this.toRun.shift();
+      let p = item();
+      this.running.push(p);
+      p.then(() => {
+        this.running.splice(this.running.indexOf(p), 1);
+        this.schedule();
+      });
+    }
+  }
+}
